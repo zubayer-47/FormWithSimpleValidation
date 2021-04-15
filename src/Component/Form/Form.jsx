@@ -10,6 +10,7 @@ class Form extends Component {
 		birthDate: "",
 		gender: "",
 		isChecked: false,
+		errors: {}
 	};
 
 	handleChange = (event) => {
@@ -27,23 +28,32 @@ class Form extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		console.log(this.state);
+		const { isValid, errors } = this.validate()
 
-		event.target.reset();
-		this.setState({
-			name: "",
-			email: "",
-			password: "",
-			birthDate: "",
-			gender: "",
-			isChecked: false,
-		});
+		if (isValid) {
+			console.log(this.state);
+
+			event.target.reset();
+			this.setState({
+				name: "",
+				email: "",
+				password: "",
+				birthDate: "",
+				gender: "",
+				isChecked: false,
+			});
+		} else {
+			this.setState({
+				errors
+			})
+		}
+
 	};
 
 	validate = () => {
-		const { name, email, password, birthDate, gender } = this.state;
 		const errors = {}
-		
+		const { name, email, password, gender, birthDate } = this.state
+
 		if (!name) {
 			errors.name = 'Please Provide Your Name'
 		}
@@ -66,12 +76,12 @@ class Form extends Component {
 
 		return {
 			errors,
-			
+			isValid: Object.keys(errors).length === 0
 		}
-	};
+	}
 
 	render() {
-		const { name, email, password, birthDate, isChecked } = this.state;
+		const { name, email, password, birthDate, isChecked, errors } = this.state;
 		return (
 			<div className="container">
 				<h2>Signup Form</h2>
@@ -82,6 +92,7 @@ class Form extends Component {
 						name="name"
 						placeholder="A B M Zubayer"
 						value={name}
+						error={errors.name}
 						handler={(event) => this.handleChange(event)}
 					/>
 					<Input
@@ -90,6 +101,7 @@ class Form extends Component {
 						name="email"
 						placeholder="test12@gmail.com"
 						value={email}
+						error={errors.email}
 						handler={(event) => this.handleChange(event)}
 					/>
 
@@ -99,6 +111,7 @@ class Form extends Component {
 						name="password"
 						placeholder="pass123"
 						value={password}
+						error={errors.password}
 						handler={(event) => this.handleChange(event)}
 					/>
 					<Input
@@ -106,6 +119,7 @@ class Form extends Component {
 						type="date"
 						name="birthDate"
 						value={birthDate}
+						error={errors.birthDate}
 						handler={(event) => this.handleChange(event)}
 					/>
 					<div className="form-group">
