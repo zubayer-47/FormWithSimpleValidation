@@ -7,11 +7,10 @@ const RadioInput = ({ type, name, value, handler, error }) => (
 			type={type}
 			name={name}
 			value={value}
-			className={ error ? 'mr-2 is-invalid' : 'mr-2' }
+			className='mr-2'
 			onChange={handler}
 		/>
 		{value}
-		{error && <div className="invalid-feedback">{error}</div>}
 	</>
 );
 

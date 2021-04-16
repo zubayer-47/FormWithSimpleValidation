@@ -23,7 +23,6 @@ Input.propTypes = {
 	name: PropTypes.string.isRequired,
 	placeholder: PropTypes.string,
 	value: PropTypes.string.isRequired,
-	// error: PropTypes.string.isRequired,
 	handler: PropTypes.func.isRequired
 }
 

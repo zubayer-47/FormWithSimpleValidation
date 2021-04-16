@@ -2,20 +2,27 @@ import React, { Component } from "react";
 import Input from "./Input/Input";
 import RadioInput from "./Input/RadioInput";
 
+const initValues = {
+	name: "",
+	email: "",
+	password: "",
+	birthDate: "",
+	gender: "",
+};
+
 class Form extends Component {
 	state = {
-		name: "",
-		email: "",
-		password: "",
-		birthDate: "",
-		gender: "",
+		values: initValues,
 		isChecked: false,
-		errors: {}
+		errors: {},
 	};
 
 	handleChange = (event) => {
 		this.setState({
-			[event.target.name]: event.target.value,
+			values: {
+				...this.state.values,
+				[event.target.name]: event.target.value
+			}
 		});
 	};
 
@@ -28,60 +35,61 @@ class Form extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		const { isValid, errors } = this.validate()
+		const { isValid, errors } = this.validate();
 
 		if (isValid) {
-			console.log(this.state);
+			this.props.createUser(this.state.values);
 
 			event.target.reset();
 			this.setState({
-				name: "",
-				email: "",
-				password: "",
-				birthDate: "",
-				gender: "",
+				values: initValues,
 				isChecked: false,
 			});
 		} else {
 			this.setState({
-				errors
-			})
+				errors,
+			});
 		}
-
 	};
 
 	validate = () => {
-		const errors = {}
-		const { name, email, password, gender, birthDate } = this.state
+		const errors = {};
+		const {
+			values: { name, email, password, gender, birthDate },
+		} = this.state;
 
-		if (!name) {
-			errors.name = 'Please Provide Your Name'
+		if (!name || name.length > 25) {
+			errors.name = "Please Provide Your Name Within 25 Characters";
 		}
 
 		if (!email) {
-			errors.email = 'Please Provide Your Email'
+			errors.email = "Please Provide Your Email";
 		}
 
-		if (!password) {
-			errors.password = 'Please Provide Your Password'
+		if (!password || password.length < 8) {
+			errors.password = "Please Provide Your Password Out of 8 Characters";
 		}
 
 		if (!birthDate) {
-			errors.birthDate = 'Please Provide Your BirthDate'
+			errors.birthDate = "Please Provide Your BirthDate";
 		}
 
 		if (!gender) {
-			errors.gender = 'Please Select Your Gender'
+			errors.gender = "Please Select Your Gender";
 		}
 
 		return {
 			errors,
-			isValid: Object.keys(errors).length === 0
-		}
-	}
+			isValid: Object.keys(errors).length === 0,
+		};
+	};
 
 	render() {
-		const { name, email, password, birthDate, isChecked, errors } = this.state;
+		const {
+			values: { name, email, password, birthDate },
+			isChecked,
+			errors,
+		} = this.state;
 		return (
 			<div className="container">
 				<h2>Signup Form</h2>
@@ -93,7 +101,7 @@ class Form extends Component {
 						placeholder="A B M Zubayer"
 						value={name}
 						error={errors.name}
-						handler={(event) => this.handleChange(event)}
+						handler={this.handleChange}
 					/>
 					<Input
 						label="Enter Your Email: "
@@ -102,7 +110,7 @@ class Form extends Component {
 						placeholder="test12@gmail.com"
 						value={email}
 						error={errors.email}
-						handler={(event) => this.handleChange(event)}
+						handler={this.handleChange.bind(this)}
 					/>
 
 					<Input
