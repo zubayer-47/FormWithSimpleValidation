@@ -1,52 +1,69 @@
-import React, { Component } from "react";
-import "./Form/App.css";
-import Form from "./Form/Form";
+import React from "react";
+import Title from "./Title";
 
-class App extends Component {
+class App extends React.Component {
 	state = {
-		users: [],
+		name: "",
+		obj: [],
+		isClicked: false,
 	};
 
-	createUser = (user) => {
-		user.id = new Date().getTime().toString();
+	handleChange = (e) => {
 		this.setState({
-			users: [...this.state.users, user],
+			[e.target.name]: e.target.value,
 		});
 	};
 
+	handleClick = () => {
+		const obj = {};
+		obj.id = new Date().getTime().toString();
+		obj.name = this.state.name;
+
+		this.setState({
+			isClicked: true,
+			obj: [obj, ...this.state.obj],
+		});
+	};
+
+	handleRemove = (id) => {
+		const {obj} = this.state;
+		this.setState({
+			// eslint-disable-next-line eqeqeq
+			obj: this.state.obj.filter((v, index) => index != obj.findIndex(ob => obj.indexOf(ob))),
+			...this.state,
+		})
+		// console.log(
+		// 	this.state.obj.filter(
+		// 		(v, index) => index !== obj.findIndex((ob) => obj.indexOf(ob))
+		// 		)
+		// 		);
+		// console.log(this.state.obj);
+	};
 	render() {
 		return (
-			<>
-				<Form createUser={(user) => this.createUser(user)} />
-
-				{this.state.users.length !== 0 && (
-					<div className="row mx-5 px-5 my-5">
-						<div className="col-sm-12 my-5">
-							<h3 className="text-center my-4 text-success">All Registered Users</h3>
-							<table className="table table-striped">
-								<thead>
-									<tr>
-										<th>Name</th>
-										<th>Email</th>
-										<th>BirthDate</th>
-										<th>Gender</th>
-									</tr>
-								</thead>
-								<tbody>
-									{this.state.users.map((user) => (
-										<tr key={user.id}>
-											<td> {user.name} </td>
-											<td> {user.email} </td>
-											<td> {user.birthDate} </td>
-											<td> {user.gender} </td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
-					</div>
-				)}
-			</>
+			<div className="container">
+				<Title value={this.state.name} handleChange={this.handleChange} />
+				<div>
+					<button onClick={this.handleClick} className="btn btn-dark">
+						Submit
+					</button>
+				</div>
+				<div>
+					<ul className="list-group my-2">
+						{this.state.obj.map((li) => (
+							<li className="list-group-item" key={li.id}>
+								{li.name}{" "}
+								<button
+									onClick={() => this.handleRemove(li.id)}
+									className="btn btn-dark"
+								>
+									Remove
+								</button>{" "}
+							</li>
+						))}
+					</ul>
+				</div>
+			</div>
 		);
 	}
 }
